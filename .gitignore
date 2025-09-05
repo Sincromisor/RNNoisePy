@@ -12,3 +12,6 @@ wheels/
 # temporary audio files
 *.wav
 *.raw
+
+# temporary lib files
+src/rnnoisepy/lib/*

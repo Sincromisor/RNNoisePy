@@ -1,6 +1,8 @@
 import ctypes
 import ctypes.util
 import os
+import sys
+from importlib import resources
 
 import numpy as np
 import numpy.typing as npt
@@ -39,13 +41,28 @@ class RNNoise:
 
     def __find_rnnoise_library(self) -> str:
         """Find path librnnoise.so"""
-        env_path = os.environ.get("RNNOISE_LIB_PATH")
-        if env_path and os.path.exists(env_path):
-            return env_path
-        libname = ctypes.util.find_library("rnnoise")
-        if libname:
-            return libname
+        # 環境変数で指定されたライブラリを参照
+        env_lib: str | None = os.environ.get("RNNOISE_LIB_PATH")
+        if env_lib and os.path.exists(env_lib):
+            return env_lib
+
+        # パッケージ内のライブラリを参照
+        package_lib: str | None = self.__find_package_rnnoise_library()
+        if package_lib and os.path.exists(package_lib):
+            return package_lib
+
+        # システムのライブラリを参照
+        system_lib: str | None = ctypes.util.find_library("rnnoise")
+        if system_lib:
+            return system_lib
         raise FileNotFoundError("librnnoise is not found. Set RNNOISE_LIB_PATH.")
+
+    def __find_package_rnnoise_library(self) -> str | None:
+        if sys.platform.startswith("linux"):
+            libname = "librnnoise.so"
+        else:
+            return None
+        return str(resources.files("rnnoisepy").joinpath("lib", libname))
 
     def __setup_function_signatures(self) -> None:
         """Setup ctypes function signatures"""
