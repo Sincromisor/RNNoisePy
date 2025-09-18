@@ -3,7 +3,7 @@ import wave
 import numpy as np
 import numpy.typing as npt
 
-from rnnoisepy.rnnoise import RNNoise
+from rnnoisepy import RNNoise
 
 rnnoise: RNNoise = RNNoise()
 print(f"RNNoise supported frame size: {rnnoise.frame_size}")
@@ -27,6 +27,7 @@ for count in range(1000):
     result = np.concatenate((result, reducted_audio))
 
 # ノイズリダクション前の音声を保存
+print("write output_source.wav")
 with wave.open("output_source.wav", "wb") as output_wav:
     output_wav.setnchannels(1)
     output_wav.setsampwidth(2)
@@ -34,6 +35,7 @@ with wave.open("output_source.wav", "wb") as output_wav:
     output_wav.writeframes(result.tobytes())
 
 # ノイズリダクション後の音声を保存
+print("write output_reducted.wav")
 with wave.open("output_reducted.wav", "wb") as output_wav:
     output_wav.setnchannels(1)
     output_wav.setsampwidth(2)

@@ -2,7 +2,7 @@ import sys
 
 import numpy as np
 
-from rnnoisepy.rnnoise import RNNoise
+from rnnoisepy import RNNoise
 
 rnnoise: RNNoise = RNNoise()
 

@@ -3,7 +3,7 @@ import wave
 import numpy as np
 import numpy.typing as npt
 
-from rnnoisepy.rnnoise import RNNoise
+from rnnoisepy import RNNoise
 
 rnnoise: RNNoise = RNNoise()
 

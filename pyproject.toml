@@ -5,12 +5,25 @@ description = "RNNoise(python bindings)"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "numpy>=2.3.2",
+    "numpy>=1.26.4",
+]
+
+authors = [
+    { name = "Akito Miura", email = "phenomer@g.hachune.net" }
+]
+license = { text = "BSD-3-Clause" }
+homepage = "https://github.com/Sincromisor/RNNoisePy"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: POSIX :: Linux",
 ]
 
 [tool.hatch.build.targets.wheel]
+# packages = ["src/rnnoisepy"]
+
 packages = ["src/rnnoisepy"]
-artifacts = ["**/*.so"]
+artifacts = ["src/rnnoisepy/lib/*.so"]
 
 [tool.hatch.build.targets.wheel.hooks.custom]
 path = "hatch_build.py"
@@ -18,7 +31,13 @@ path = "hatch_build.py"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
-pure-python = false
+# pure-python = false
+
+[tool.cibuildwheel]
+before-build = [
+    "/project/cibuildwheel/build-rnnoise.sh",
+]
+test-command = "bash -l /project/cibuildwheel/test-rnnoise.sh"
 
 # https://docs.astral.sh/ruff/rules/
 [tool.ruff.lint]

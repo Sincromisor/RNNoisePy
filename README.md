@@ -4,33 +4,23 @@
 Pythonから簡単に使えるようにするためのシンプルなライブラリです。
 ノイズリダクションに加え、音声フレームごとの音声っぽさを評価できます。
 
-
 ## インストール
 
-ライブラリのインストールには[uv](https://github.com/astral-sh/uv)を用います。
+x86_64環境では、`pip`コマンドでインストールできます。
 
 ```sh
-$ git clone https://github.com/Sincromisor/RNNoisePy.git
-$ cd RNNoisePy
-$ uv sync
+$ pip install rnnoisepy
 ```
-
-これに加え、`librnnoise.so`が必要です。
-[RNNoiseのソースコード](https://gitlab.xiph.org/xiph/rnnoise)からビルドしてください。
-
 
 ## つかいかた
-先ほどビルドしたライブラリのパスを環境変数で渡し、実行してください。
 
-```sh
-$ RNNOISE_LIB_PATH="/home/sincromisor/apps/lib/librnnoise.so" uv run examples/rnnoise-test.py
-```
+先ほどビルドしたライブラリのパスを環境変数で渡し、実行してください。
 
 ```python
 import numpy as np
 import numpy.typing as npt
 
-from rnnoisepy.rnnoise import RNNoise
+from rnnoisepy import RNNoise
 
 rnnoise: RNNoise = RNNoise()
 
@@ -38,14 +28,24 @@ rnnoise: RNNoise = RNNoise()
 # NDArray形式で用意
 audio_data
 
-# ノイズリダクションの音声フレームと音声っぽさを得る
+# ノイズリダクションした音声フレームと、人間の音声っぽさの値を得る。
+# voice_probsは0.0～1.0。1.0に近いほど人間の音声っぽい。
 reducted_audio: npt.NDArray[np.int16]
 voice_probs: float
 reducted_audio, voice_probs = rnnoise.process_frame(audio_data)
 ```
 
-詳しくは [`examples/rnnoise-file.py`](examples/rnnoise-test.py)などを参照してください。
+詳しくは [`examples/rnnoise-file.py`](examples/rnnoise-file.py)などを参照してください。
 
+## サポートしている環境
+
+現時点ではLinux(`-march=x86-64-v3`)のバイナリのみを用意しています。
+それ以外の環境では、RNNoiseのソースコードから[`librnnoise.so`](https://gitlab.xiph.org/xiph/rnnoise)をビルドし、
+次のように環境変数`RNNOISE_LIB_PATH`でライブラリのパスを指定すれば利用できる可能性があります。
+
+```sh
+$ RNNOISE_LIB_PATH="/home/sincromisor/apps/lib/librnnoise.so" uv run examples/rnnoise-file.py
+```
 
 ## 制約
 * サンプリングレートは48000Hzで固定されています。
